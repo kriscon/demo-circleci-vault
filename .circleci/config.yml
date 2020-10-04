@@ -1,0 +1,24 @@
+version: 2.1
+
+jobs:
+  vault_auth:
+    docker:
+      - image: vault:1.5.4
+    steps:
+      - checkout
+      - run:
+          command: |
+            echo $VAULT_ROLE_ID > vault/role-id
+            echo $VAULT_SECRET_ID > vault/secret-id
+            vault agent -config=vault/agent.hcl
+            echo $USER_NAME
+            echo $USER_PWD
+      #- persist_to_workspace:
+      #    root: ~/project/vault
+      #    paths:
+      #      - /tmp/credfile
+
+workflows:
+  build:
+    jobs:
+      - vault_auth
